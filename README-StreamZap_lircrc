@@ -1,0 +1,5 @@
+After you download and install LIRC 0.7.2 or newer, rename StreamZap_lircrc to 'lircrc' and place it in $HOME/.mythtv/, where $HOME is the home directory of the account you use to run MythTV.  Next, download http://lirc.sourceforge.net/remotes/streamzap/PC_Remote and rename it lirc.conf before placing it in /etc/lirc/ Then just run lircd, re-launch MythTV, and your remote should work! If you wish to remap the buttons, simply edit $HOME/.mythtv/lircrc
+
+For non-KnoppMyth users or non-MythTV users, use $HOME/.lircrc instead of $HOME/.mythtv/lircrc
+
+For questions, contact Bob Igo : Bob@StormLogic.com

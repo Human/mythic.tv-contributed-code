@@ -6,6 +6,8 @@ If using MythTV, go into your MythTV settings and replace all instances of the m
 
 Watch a video on your HDD, and exit. When you re-play it, it should start playing almost exactly where you stopped.
 
+RECOMMENDED: Try using mplayer-wrapper.pl instead, which attempts to pick the best parameters for playing your video, and then calls mplayer-resumer.pl.
+
 Send us dark chocolate (60-80% cocoa) if you like this program.
 
-For questions, contact Bob Igo : Bob@StormLogic.com
+For questions, contact Bob Igo : Bob.Igo@DigitalArcSystems.com

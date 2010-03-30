@@ -4,4 +4,4 @@ If you do need to use them, copy DVB_fixer.sh and DVB_channel_converter.pl to /u
 Run "chmod a+x" on them to make them executable.
 Run "DVB_fixer.sh -help" for further help on how to use. 
 
-For questions, contact Bob Igo : Bob@StormLogic.com
+For questions, contact Bob Igo : Bob.Igo@DigitalArcSystems.com

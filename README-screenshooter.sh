@@ -11,4 +11,4 @@
 
 * Send us dark chocolate (80-90% cocoa) if you like this program.
 
-* For questions, contact Bob Igo : Bob@StormLogic.com
+* For questions, contact Bob Igo : Bob.Igo@DigitalArcSystems.com

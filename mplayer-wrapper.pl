@@ -99,6 +99,7 @@ sub dynamic_parameters () {
     my $codec="";
     my $xresolution=0;
     my $yresolution=0;
+    my $aspect_ratio=0.0;
     my %vdpau_supported_modes=();
     my $vf_parameters="";
 
@@ -133,8 +134,8 @@ sub dynamic_parameters () {
     }
     close(SHELL);
     
-    # Learn some things about the video: codec and resolution
-    my $command="mplayer -identify -frames 0 \"$mediafile\" |";
+    # Learn some things about the video: codec, aspect ratio, and resolution
+    my $command="mplayer -identify -frames 1 -vo null -ao null \"$mediafile\" |";
     open(SHELL, $command);
     while (<SHELL>) {
 	chop;
@@ -147,38 +148,43 @@ sub dynamic_parameters () {
 	} elsif (m/ID_VIDEO_HEIGHT=(.*)/g) {
 	    $yresolution = $1;
 	    #print "DEBUG: y resolution is $yresolution\n";
+	} elsif (m/ID_VIDEO_ASPECT=(.*)/g) {
+	    $aspect_ratio = $1;
 	}
     }
     close(SHELL);
 
-    # see if it's a malformed 4:3 video with top and side bars, in need of cropping
-    my $crop_candidate="";
-    my $biggestX=0;
-    my $biggestY=0;
-    # The algorithm here is trial and error.  Skip 6 minutes into a video, and look at 40 frames of
-    # video.  Videos shorter than 6 minutes will not end up being examined for letterboxing badness.
-    # In a longer video, use the least-recommended pruning that mplayer suggests, among the frames polled.
-    my $command="mplayer -ss 360 -ao null -vo null -vf cropdetect -frames 40 \"$mediafile\" | grep CROP | tail -1 |";
-    open(SHELL, $command);
-    while (<SHELL>) {
-	if (m/-vf (crop=.*)\)/g) {
-	    $crop_candidate = $1;
-	    print "DEBUG: $crop_candidate\n";
-	    if ($crop_candidate =~ m/(\d+):(\d+)/) {
-		if (($1 > $biggestX) && ($2 > $biggestY)) {
-		    $biggestX = $1;
-		    $biggestY = $2;
-		    print "newX: $biggestX\n";
-		    print "newY: $biggestY\n";
+    # see if it's a 4:3 video
+    if ($aspect_ratio =~ m/1\.3\d*/) {
+	# see if it's a malformed 4:3 video with top and side bars, in need of cropping
+	my $crop_candidate="";
+	my $biggestX=0;
+	my $biggestY=0;
+	# The algorithm here is trial and error.  Skip 6 minutes into a video, and look at 40 frames of
+	# video.  Videos shorter than 6 minutes will not end up being examined for letterboxing badness.
+	# In a longer video, use the least-recommended pruning that mplayer suggests, among the frames polled.
+	my $command="mplayer -ss 360 -ao null -vo null -vf cropdetect -frames 40 \"$mediafile\" | grep CROP | tail -1 |";
+	open(SHELL, $command);
+	while (<SHELL>) {
+	    if (m/-vf (crop=.*)\)/g) {
+		$crop_candidate = $1;
+		#print "DEBUG: $crop_candidate\n";
+		if ($crop_candidate =~ m/(\d+):(\d+)/) {
+		    if (($1 > $biggestX) && ($2 > $biggestY)) {
+			$biggestX = $1;
+			$biggestY = $2;
+			#print "DEBUG newX: $biggestX\n";
+			#print "DEBUG newY: $biggestY\n";
+		    }
 		}
 	    }
+	    if (($biggestX != $xresolution) || ($biggestY != $yresolution)) {
+		$vf_parameters = $crop_candidate;
+	    }
+	    #print "DEBUG: crop parameter is $vf_parameters\n";
 	}
-	if (($biggestX != $xresolution) || ($biggestY != $yresolution)) {
-	    $vf_parameters = $crop_candidate;
-	}
-	print "DEBUG: crop parameter is $vf_parameters\n";
+	close(SHELL);
     }
-    close(SHELL);
 
     # If there are no crop parameters, use vdpau if it's supported.  Don't use vdpau if there's cropping
     # because vdpau doesn't work with mplayer's cropping video filter.

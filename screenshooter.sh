@@ -156,7 +156,6 @@ VIDEO_CAPTURE_PATHNAME="$VIDEO_CAPTURE_HOME/$VIDEO_FILENAME.png"
 # How many frames of video to capture.  We'll grab the last frame as our screenshot.
 if [ "$VIDEO_EXTENSION" == "m4v" ]; then
     FRAMES_TO_CAPTURE="90"
-    SHOTFILE="000000"$FRAMES_TO_CAPTURE".png"
 else
     FRAMES_TO_CAPTURE="05"
 fi

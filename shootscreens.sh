@@ -19,9 +19,9 @@ fi
     percentage=0
     # Change IFS to be a newline so that filenames with spaces will be handled properly.
     IFS=$'\n'
-    vidcount=`mysql -u root mythconverg -B -e "select filename from videometadata where coverfile=\"No Cover\";" | wc -l`
+    vidcount=`mysql -u root mythconverg -B -e "select filename from videometadata where coverfile=\"No Cover\" OR coverfile=\"\";" | wc -l`
     increment=$(expr 100 / $vidcount)
-    for vid in `mysql -u root mythconverg -B -e "select filename from videometadata where coverfile=\"No Cover\";" | grep -v -e "^filename$"`
+    for vid in `mysql -u root mythconverg -B -e "select filename from videometadata where coverfile=\"No Cover\" OR coverfile=\"\";" | grep -v -e "^filename$"`
     do
       if [ $OSD == 1 ]; then
 	osd_cat --barmode=percentage --percentage=$percentage --pos=middle --align=center --color=white --text="Generating Video Thumbnails..." --font=$FONT --shadow=3 --color=yellow --delay=0 &

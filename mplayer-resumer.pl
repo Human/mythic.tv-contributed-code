@@ -119,7 +119,7 @@ sub mplayer () {
     my($parameters,$infile)=@_;
     my $seconds=0;
     my $timecode=&get_time_offset($infile);
-    my $command = "mplayer $parameters -ss $timecode \"$infile\" 2>&1 2>/dev/null |";
+    my $command = "mplayer $parameters -ss $timecode \"$infile\" 2>&1 |";
 
     open(SHELL, $command);
     # The kind of line we care about looks like this example:
@@ -130,7 +130,7 @@ sub mplayer () {
 	#print DEBUG $_;
 	if (m/A: *[0-9]+\.[0-9]/) { # See if this line has timecodes on it
 	    my $last_timecode_line = &extract_last_timecode_line($_);
-	    if ($last_timecode_line =~ m/ *([0-9]+\.[0-9]) V/) {
+	    if ($last_timecode_line =~ m/ *([0-9]+\.[0-9]) /) {
 		$seconds=$1;
 	    }
 	}
@@ -184,5 +184,5 @@ sub print_usage () {
     print "USAGE:\n";
     print "\t",$ARGV[0], "[mplayer parameters] video_file\n";
     print "\t","e.g. ",$ARGV[0], "-fs -zoom my.mpg\n";
-    print "\t","Version 5/3/2006\n";
+    print "\t","Version 7/11/2013\n";
 }
